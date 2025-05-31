@@ -1,0 +1,82 @@
+#+TITLE: 17
+#+AUTHOR: ATTA
+#+STARTUP: overview
+#+OPTIONS: toc:2
+
+* Table of contents :toc:
+- [[#intro][Intro]]
+-  [[#sparse-autoencoders][Sparse Autoencoders]]
+
+* Intro
+
+Learn coding/latent representations without supervision
+Detect features in unspervised pretraining
+Generative: generate data similar to the training data
+Autoencoders vs Gans:
+   - codings are byproduct of learning identity function
+   - Gans are composed of networks: generator and discriminator
+An autoencoder is composed of two parts, encoders that learn the eficient latent representations and decoders that spits out something that is very closed ot inputs.
+reconstructions are the outupts
+Undercomplete autoencoders:  internal representations have lower dimensionality than the input data
+
+PCA with undercomplete linear autoencoder
+
+#+BEGIN_SRC python
+encoder = []
+decoder = []
+auto_enc = [] 
+auto_enc.compile() 
+history = auto_enc.fit() 
+encodings = encoders.predict() 
+#+END_SRC 
+
+Stacked Autoencoders: Add more layers
+
+....
+
+*  Sparse Autoencoders
+
+For good feature extraction, add sparsity,
+Reduces the number f active neurons in the coding layers
+Represent each input as a combination of small number of activations
+Use sigmoid activation
+Add a large coding layer but add l1 regularization to the activations of coding layer
+
+
+#+BEGIN_SRC python
+sparse_l1_encoder = keras.models.Sequential(
+    [
+        keras.layers.Flatten(input_shape=[28, 28]),
+        keras.layers.Dense(100, activation="selu"),
+        keras.layers.Dense(300, activation="sigmoid"),
+        keras.layers.ActivityRegularization(l1=1e-3)  
+    ]
+)
+
+sparse_l1_decoder = keras.models.Sequential(
+    [
+        keras.layers.Dense(100, activation="selu", input_shape=[300]),
+        keras.layers.Dense(28 * 28, activation="sigmoid"),
+        keras.layers.Reshape([28, 28]),
+    ]
+)
+
+sparse_l1_ae = keras.models.Sequential([sparse_l1_encoder, sparse_l1_decoder])
+
+sparse_l1_ae.compile(
+    loss="binary_crossentropy",
+    optimizer=keras.optimizers.SGD(learning_rate=1.0),
+    metrics=[rounded_accuracy],
+)
+
+#+END_SRC 
+
+Another approach
+Measure the actual sparsity of the coding layer at each training iteration
+Penalize the model when the measured sparsity differs from the the target sparsity
+Compute the average activatin of each neuron in the coding layer over the whole
+training batch
+The batch size must not be to small
+Penlize the neurons that are not active enought or too active
+Use KLdivergence
+

@@ -1,0 +1,78 @@
+# Pseudocode for Building a Natural Machine Translation Model (English to Spanish) using Autoencoders with NumPy
+
+1. Initialize the environment:
+   - Import NumPy for matrix operations.
+   - Set random seed for reproducibility.
+
+2. Prepare the data:
+   - Collect a dataset of paired English-Spanish sentences.
+   - Tokenize sentences: split into words, convert to lowercase, remove punctuation.
+   - Build vocabularies for English and Spanish (map words to unique indices).
+   - Create word embeddings (simplified: random vectors for each word).
+   - Pad or truncate sentences to a fixed length (e.g., max 10 words).
+   - Convert sentences to sequences of embedding vectors.
+   - Split data into training, validation, and test sets.
+
+3. Define model architecture:
+   - Set hyperparameters: embedding size (e.g., 100), hidden layer size (e.g., 256), latent size (e.g., 128), learning rate (e.g., 0.001).
+   - Encoder:
+     - Input: sequence of English word embeddings (shape: max_length × embedding_size).
+     - Flatten input or average embeddings to a fixed-size vector.
+     - Dense layer 1: multiply input by weight matrix W1, add bias b1, apply ReLU activation.
+     - Dense layer 2: multiply output by weight matrix W2, add bias b2, apply ReLU to get latent vector (shape: latent_size).
+   - Decoder:
+     - Input: latent vector from encoder.
+     - Dense layer 1: multiply latent vector by weight matrix W3, add bias b3, apply ReLU.
+     - Dense layer 2: multiply output by weight matrix W4, add bias b4, apply ReLU.
+     - Output layer: multiply by weight matrix W5, add bias b5, apply softmax to predict probabilities over Spanish vocabulary for each word in sequence.
+
+4. Initialize model parameters:
+   - Randomly initialize weight matrices and biases for encoder and decoder layers (use small random values).
+   - Ensure shapes match: e.g., W1 maps input to hidden_size, W2 maps hidden_size to latent_size.
+
+5. Define activation functions:
+   - ReLU: set negative values to 0, keep positive values.
+   - Softmax: exponentiate inputs, normalize by sum to get probabilities.
+
+6. Define loss function:
+   - Use cross-entropy loss: compare predicted Spanish word probabilities with true word indices.
+   - For each sentence, sum loss over all words in the sequence.
+   - Average loss across batch.
+
+7. Training loop:
+   - Set number of epochs (e.g., 100).
+   - For each epoch:
+     - Shuffle training data.
+     - Process data in batches (e.g., batch size 32):
+       - Forward pass:
+         - Pass English sentence through encoder to get latent vector.
+         - Pass latent vector through decoder to predict Spanish word probabilities.
+       - Compute loss between predicted and true Spanish words.
+       - Backward pass:
+         - Compute gradients of loss with respect to decoder weights using backpropagation.
+         - Compute gradients through latent vector to encoder weights.
+         - Update weights using gradient descent: new_weight = old_weight - learning_rate × gradient.
+     - Every few epochs, compute validation loss and print progress.
+     - If validation loss stops decreasing, reduce learning rate or stop early.
+
+8. Inference:
+   - Take an English sentence.
+   - Convert to embedding sequence.
+   - Pass through encoder to get latent vector.
+   - Pass latent vector through decoder.
+   - For each word position:
+     - Get softmax probabilities.
+     - Select word with highest probability (or sample randomly).
+     - Stop if end-of-sentence token is predicted or max length reached.
+   - Convert word indices to Spanish words.
+
+9. Evaluate model:
+   - Use test set to compute metrics (e.g., BLEU score for translation quality).
+   - Manually inspect translations for fluency and accuracy.
+
+10. Save model:
+    - Store weight matrices and biases as NumPy arrays.
+    - Save vocabularies and embedding matrices.
+
+
+

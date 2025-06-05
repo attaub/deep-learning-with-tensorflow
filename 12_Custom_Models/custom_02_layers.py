@@ -1,6 +1,9 @@
 ### Custom loss function
 
-# Let's start by loading and preparing the California housing dataset. We first load it, then split it into a training set, a validation set and a test set, and finally we scale it:
+"""
+Let's start by loading and preparing the California housing dataset.
+We first load it, then split it into a training set, a validation set and a test set, and finally we scale it:
+"""
 
 
 from sklearn.datasets import fetch_california_housing

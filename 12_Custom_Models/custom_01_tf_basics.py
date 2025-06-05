@@ -1,18 +1,13 @@
 import sklearn
 import tensorflow as tf
 from tensorflow import keras
-
-# Common imports
 import numpy as np
 
-np.random.seed(42)
-tf.random.set_seed(42)
+#################################################################
+## Tensors and operations
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-# ## Tensors and operations
-# ### Tensors
+#################################################################
+## Tensors
 tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])  # matrix
 tf.constant(42)  # scalar
 t = tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
@@ -20,32 +15,31 @@ t
 
 t.shape
 t.dtype
-
-# ### Indexing
+#################################################################
+## Indexing
 t[:, 1:]
 t[..., 1, tf.newaxis]
 
-# ### Ops
+#################################################################
+## Ops
 t + 10
 tf.square(t)
 t @ tf.transpose(t)
 
-# ### Using `keras.backend`
-
-from tensorflow import keras
-
+## Using keras.backend
 K = keras.backend
 K.square(K.transpose(t)) + 10
 
-# ### From/To NumPy
+## From/To NumPy
 a = np.array([2.0, 4.0, 5.0])
 tf.constant(a)
 t.numpy()
 np.array(t)
 tf.square(a)
 np.square(t)
-# ### Conflicting Types
 
+#################################################################
+## Conflicting Types
 try:
     tf.constant(2.0) + tf.constant(40)
 except tf.errors.InvalidArgumentError as ex:
@@ -56,10 +50,16 @@ try:
 except tf.errors.InvalidArgumentError as ex:
     print(ex)
 
+try:
+    tf.constant(2.0) + tf.constant(40.0)
+except tf.errors.InvalidArgumentError as ex:
+    print(ex)
+
 t2 = tf.constant(40.0, dtype=tf.float64)
 tf.constant(2.0) + tf.cast(t2, tf.float32)
 
-# ### Strings
+#################################################################
+# Strings
 
 tf.constant(b"hello world")
 tf.constant("café")
@@ -69,7 +69,7 @@ b = tf.strings.unicode_encode(u, "UTF-8")
 tf.strings.length(b, unit="UTF8_CHAR")
 tf.strings.unicode_decode(b, "UTF-8")
 
-# ### String arrays
+# String arrays
 p = tf.constant(["Café", "Coffee", "caffè", "咖啡"])
 tf.strings.length(p, unit="UTF8_CHAR")
 r = tf.strings.unicode_decode(p, "UTF8")
@@ -77,7 +77,8 @@ r
 
 print(r)
 
-# ### Ragged tensors
+#################################################################
+## Ragged tensors
 print(r[1])
 print(r[1:3])
 
@@ -90,6 +91,7 @@ print(tf.concat([r, r3], axis=1))
 tf.strings.unicode_encode(r3, "UTF-8")
 r.to_tensor()
 
+#################################################################
 # ### Sparse tensors
 s = tf.SparseTensor(
     indices=[[0, 1], [1, 0], [2, 3]],
@@ -126,6 +128,7 @@ except tf.errors.InvalidArgumentError as ex:
 s6 = tf.sparse.reorder(s5)
 tf.sparse.to_dense(s6)
 
+#################################################################
 # ### Sets
 
 set1 = tf.constant([[2, 3, 5, 7], [7, 9, 0, 0]])
@@ -135,7 +138,7 @@ tf.sparse.to_dense(tf.sets.difference(set1, set2))
 
 tf.sparse.to_dense(tf.sets.intersection(set1, set2))
 
-
+#################################################################
 # ### Variables
 v = tf.Variable([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
 v.assign(2 * v)
@@ -153,7 +156,7 @@ sparse_delta = tf.IndexedSlices(
     values=[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]], indices=[1, 0]
 )
 v.scatter_update(sparse_delta)
-
+#################################################################
 # ### Tensor Arrays
 array = tf.TensorArray(dtype=tf.float32, size=3)
 array = array.write(0, tf.constant([1.0, 2.0]))

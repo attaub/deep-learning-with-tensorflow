@@ -6,19 +6,19 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.linear_model import Perceptron
 from matplotlib.colors import ListedColormap
-
-
 #################################################################
-# # Perceptrons
+# Perceptrons `slklearn.linear_model.Perceptron`
+
+
 iris = load_iris()
 X = iris.data[:, (2, 3)]  # petal length, petal width
 y = (iris.target == 0).astype(np.int)
 
 per_clf = Perceptron(max_iter=1000, tol=1e-3, random_state=42)
 per_clf.fit(X, y)
+
 y_pred = per_clf.predict([[2, 0.5]])
 print(y_pred)
-
 
 a = -per_clf.coef_[0][0] / per_clf.coef_[0][1]
 b = -per_clf.intercept_ / per_clf.coef_[0][1]
@@ -49,11 +49,10 @@ plt.xlabel("Petal length", fontsize=14)
 plt.ylabel("Petal width", fontsize=14)
 plt.legend(loc="lower right", fontsize=14)
 plt.axis(axes)
-
 plt.show()
-#################################################################
-# # Activation functions
 
+######################################################
+# Activation functions
 
 def sigmoid(z):
     return 1 / (1 + np.exp(-z))

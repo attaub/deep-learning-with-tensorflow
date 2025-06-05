@@ -1,19 +1,16 @@
-import sklearn
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
+# from sklearn.datasets import fetch_california_housing
 #################################################################
 # # Building an Image Classifier
 # First let's import TensorFlow and Keras.
 
 fashion_mnist = keras.datasets.fashion_mnist
 (X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
-X_train_full.shape
-X_train_full.dtype
-
 
 X_valid, X_train = X_train_full[:5000] / 255.0, X_train_full[5000:] / 255.0
 y_valid, y_train = y_train_full[:5000], y_train_full[5000:]
@@ -82,6 +79,7 @@ model = keras.models.Sequential(
 
 model.layers
 model.summary()
+
 #################################################################
 keras.utils.plot_model(model, "my_fashion_mnist_model.png", show_shapes=True)
 
